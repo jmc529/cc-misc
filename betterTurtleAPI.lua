@@ -46,12 +46,21 @@ function BTA.calibrate()
         print("\nZ:")
         z = tonumber(read())
         position = vector.new(x, y, z)
+        print("Please enter the direction the turtle is facing <N,E,W,S>:")
+        direction = read()
+        if not direction:find("N") and not direction:find("E") and not direction:find("W") and not direction:find("S") then
+            BTA.calibrate()
+        end
+        dirDic = {["N"] = 0, ["E"] = 1, ["S"] = 2, ["W"] = 3}
+        currentDirection = dirDic[direction]
+
     else
         if turtle.getFuelLevel() < 1 then
             error("Please supply your turtle with fuel for gps calibration.")
         end
 
         local location1 = vector.new(gps.locate(5))
+        position = location1
         turtle.forward()
         local location2 = vector.new(gps.locate(5))
         turtle.back()
