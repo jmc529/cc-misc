@@ -1,0 +1,16 @@
+{
+  "cSpell.words": ["computercraft", "serialise", "textutils", "unserialise"],
+  "Lua.diagnostics.globals": [
+    "read",
+    "gps",
+    "vector",
+    "turtle",
+    "peripheral",
+    "parallel",
+    "textutils",
+    "sleep",
+    "bta",
+    "http",
+    "shell"
+  ]
+}

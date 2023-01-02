@@ -36,10 +36,10 @@ parallel.waitForAny(
     function()
         while true do
             sleep()
-            loc_new = vector.new(gps.locate(5))
-            loc_new:round()
-            if loc_new:cross(loc_old):dot(loc_new) == 0 then
-                loc_old = loc_new
+            local locationNew = vector.new(gps.locate(5))
+            locationNew:round()
+            if locationNew:cross(loc_old):dot(locationNew) == 0 then
+                loc_old = locationNew
                 target = textutils.serialise(loc_old)
                 os.queueEvent("broadcast")
             end
