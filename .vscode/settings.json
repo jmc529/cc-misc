@@ -1,5 +1,12 @@
 {
-  "cSpell.words": ["computercraft", "serialise", "textutils", "unserialise"],
+  "cSpell.words": [
+    "computercraft",
+    "deepslate",
+    "minecraft",
+    "serialise",
+    "textutils",
+    "unserialise"
+  ],
   "Lua.diagnostics.globals": [
     "read",
     "gps",
