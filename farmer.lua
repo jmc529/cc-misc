@@ -5,7 +5,8 @@ if (bta == nil) then
 	bta = require("bta")
 end
 
-local seeds = {}
+local seeds = { "minecraft:seeds", "minecraft:carrots", "minecraft:potato", "minecraft:beetroot_seed"}
+local currentSeed = 1
 
 local function buildFarm()
 end
