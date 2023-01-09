@@ -1,7 +1,8 @@
 -- For MSKS, but can be modified for other formats
 local DATA_PATH = "/"
-local LISTING_NAME = "listing"
+local LISTING_NAME = "listing" 
 local INVENTORIES = { "chest" }
+local STORE = "" --change to mall/location
 
 local function getLastString(s, sep)
     local t = {}
@@ -23,16 +24,16 @@ local function rawMeta(item)
 end
 
 local function genericItem(item)
+    local displayName = item.enchantments and item.enchantments[1].displayName or item.displayName
     local meta = rawMeta(item)
     print("How much should we charge for: " .. meta)
     local price = tonumber(read())
-    local id = item.name
 
     return {
-        ["label"] = item.displayName,
+        ["label"] = displayName,
         ["price"] = price,
-        ["id"] = id,
-        ["metaname"] = meta,
+        ["id"] = item.name,
+        ["metaname"] = STORE..meta,
         ["nbt"] = nil or item.nbt
     }
 end
