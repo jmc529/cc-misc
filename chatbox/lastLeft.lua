@@ -4,6 +4,7 @@ local TS_PATH = "last-left/ts"
 local excluded = {}
 local lastOn = {}
 local timer = nil
+local TS_PATTERN = "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)%.(%d+)"
 
 --helper functions
 local function writeToFile()
@@ -40,7 +41,7 @@ if fs.exists(TS_PATH) then
         local line = last.readLine()
         if not line then
             break
-        else 
+        else
             local user, time = splitString(line, "|")
             lastOn[user] = time
         end
@@ -52,7 +53,7 @@ end
 parallel.waitForAny(
     --wait for leave event
     function ()
-        while true do
+        while true do 
             local event, user, data = os.pullEvent("leave")
             if not excluded[user:lower()] then
                 lastOn[user:lower()] = data.time
@@ -77,7 +78,11 @@ parallel.waitForAny(
                         local inputUser = args[1]
                         local timeStamp = lastOn[inputUser:lower()]
                         if timeStamp then
-                            chatbox.tell(user, inputUser.." last left SC3 on: "..timeStamp, BOT_NAME)
+                            local xYear, xMonth, xDay, xHour, xMinute,
+                                xSeconds, xMill, xOffset = timeStamp:match(TS_PATTERN)
+                            local convertedTimestamp = os.time({year = xYear, month = xMonth,
+                                day = xDay, hour = xHour, min = xMinute, sec = xSeconds})
+                            chatbox.tell(user, inputUser.." last left SC3 on: "..convertedTimestamp, BOT_NAME)
                         else
                             chatbox.tell(user, "No data on "..inputUser..". Maybe they opted out.", BOT_NAME)
                         end
