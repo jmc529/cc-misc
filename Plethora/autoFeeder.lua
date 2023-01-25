@@ -27,7 +27,7 @@ while true do
 		if not item then
 			for slot, meta in pairs(inv.list()) do
 				local slotItem = inv.getItemDetail(slot)
-				if acceptableFood[slotItem.name] and slotItem.consume(slot) then
+				if acceptableFood[slotItem.name] and inv.consume(slot) then
 					print("Using food from slot " .. slot)
 					item = slotItem
 					cachedSlot = slot
@@ -37,7 +37,7 @@ while true do
 		end
 
 		if item then
-			item.consume()
+			inv.consume(cachedSlot)
 		else
 			print("Cannot find food")
 			break
