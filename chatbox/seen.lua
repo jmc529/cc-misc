@@ -5,7 +5,7 @@ local excluded = {}
 local lastOnID = {}
 local lastOnName = {}
 local timer = nil
-local websocket = http.websocket("wss://chat.sc3.io/v2/{add the chat key}")
+local websocket = http.websocket("wss://chat.sc3.io/v2/3101b983-1fb7-4a1f-9ab0-a99412a8c292")
 local hello, ok = websocket.receive()
 
 --helper functions
@@ -56,6 +56,7 @@ local function parseDateTime(str)
     local Y,M,D = str:match("^(%d-)-?(%d-)-?(%d-)")
     local h,m,s = str:match("T(%d-):(%d-):(%d-)([-+])")
     local oh,om =   str:match("([-+])(%d%d):?(%d?%d?)$")
+    print(Y, M, D, h, m, s, oh, om)
     return os.time({year=Y, month=M, day=D, hour=(h+oh), min=(m+om), sec=s})
 end
 
@@ -66,39 +67,14 @@ parallel.waitForAny(
             local packet, ok = websocket.receive()
             packet = textutils.unserializeJSON(packet)
             if packet.type and packet.type == "event" and packet.event == "leave" then
-                if not excluded[packet.user.uuid] then
-                    lastOnID[packet.user.uuid] = {["name"] = packet.user.name, ["ts"] = packet.time}
-                    lastOnName[packet.user.name:lower()] = packet.time
-                    if timer then
-                        os.cancelTimer(timer)
-                    end
-                    timer = os.startTimer(60)
-                end
-            end
-        end
-    end,
-    -- timestamp and opt out
-    function ()
-        while true do
-            local event, user, command, args = os.pullEvent("command")
-            if command == "seen" then
-                if #args > 0 then
-                    if args[1] == "opt-out" then
-                        local opt = fs.open(OPT_OUT_PATH, "a")
-                        opt.write(user.uuid)
-                        opt.close()
-                    else
-                        local inputUser = args[1]
-                        local timeStamp = lastOnName[inputUser:lower()]
-                        if timeStamp then
-                            chatbox.tell(user, inputUser.." last left SC3 on: "..textutils.formatTime(parseDateTime(timeStamp)), BOT_NAME)
-                        else
-                            chatbox.tell(user, "No data on "..inputUser..". Maybe they opted out.", BOT_NAME)
-                        end
-                    end
-                else
-                    chatbox.tell(user, "Tracks when a user last left from SC3. Usage: '\\seen lakeontario'. Opt out with '\\seen opt-out'.", BOT_NAME)
-                end
+              if not excluded[packet.user.uuid] then
+                  lastOnID[packet.user.uuid] = {["name"] = packet.user.name, ["ts"] = packet.time}
+                  lastOnName[packet.user.name:lower()] = packet.time
+                  if timer then
+                      os.cancelTimer(timer)
+                  end
+                  timer = os.startTimer(60)
+              end
             end
         end
     end,
