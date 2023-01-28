@@ -8,8 +8,9 @@ local inv = modules.getInventory()
 local cachedSlot = false
 
 local acceptableFood = {["minecraft:cooked_porkchop"] = true, ["minecraft:cooked_beef"] = true, ["minecraft:cooked_mutton"] = true,
-						["minecraft:cooked_salmon"] = true, ["minecraft:cooked_chicken"] = true, ["minecraft:baked_potato"] = true,
-						["minecraft:bread"] = true, ["minecraft:cooked_cod"] = true, ["minecraft:cooked_rabbit"] = true}
+						["minecraft:honey_bottle"] = true, ["minecraft:cooked_salmon"] = true, ["minecraft:cooked_chicken"] = true,
+						["minecraft:baked_potato"] = true, ["minecraft:bread"] = true, ["minecraft:cooked_cod"] = true, 
+						["minecraft:cooked_rabbit"] = true}
 
 while true do
 	local data = modules.getMetaOwner()
