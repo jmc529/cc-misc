@@ -5,6 +5,8 @@ local excluded = {}
 local lastOnID = {}
 local lastOnName = {}
 local timer = nil
+local websocket = http.websocket("wss://chat.sc3.io/v2/{add the chat key}")
+local hello, ok = websocket.receive()
 
 --helper functions
 local function writeToFile()
@@ -61,14 +63,17 @@ parallel.waitForAny(
     --wait for leave event
     function ()
         while true do
-            local event, user, data = os.pullEvent("leave")
-            if not excluded[user.uuid] then
-                lastOnID[user.uuid] = {user, data.time}
-                lastOnName[user.name:lower()] = data.time
-                if timer then
-                    os.cancelTimer(timer)
+            local packet, ok = websocket.receive()
+            packet = textutils.unserializeJSON(packet)
+            if packet.type and packet.type == "event" and packet.event == "leave" then
+                if not excluded[packet.user.uuid] then
+                    lastOnID[packet.user.uuid] = {["name"] = packet.user.name, ["ts"] = packet.time}
+                    lastOnName[packet.user.name:lower()] = packet.time
+                    if timer then
+                        os.cancelTimer(timer)
+                    end
+                    timer = os.startTimer(60)
                 end
-                timer = os.startTimer(60)
             end
         end
     end,
@@ -102,6 +107,7 @@ parallel.waitForAny(
         while true do
             os.pullEvent("server_restart_scheduled")
             writeToFile()
+            websocket.close()
         end
     end,
     -- write if queued
