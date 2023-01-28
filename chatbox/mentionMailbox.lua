@@ -19,7 +19,7 @@ parallel.waitForAny(
             local event, user, message, data = os.pullEvent("chat_ingame")
             if message:find("lakeontario") then
                 if not excluded[user:lower()] then
-                    chatbox.tell(user, "lakeontario is AFK right now. This mention has been recorded and they will see it when they return. Contact @Josee if you need faster response time.", BOT_NAME)
+                    chatbox.tell(user, "lakeontario is AFK right now. This mention has been recorded and they will see it when they return. Contact on discord if you need faster response time.", BOT_NAME)
                     local m = fs.open(MESSAGES_PATH, "a")
                     local info = user.."|"..data.time.."|"..message
                     m.write(info)
