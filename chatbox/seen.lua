@@ -1,7 +1,7 @@
 local TS_PATH = "seen/ts"
 local monitor = "monitor_430"
 local lastOnID = {}
-local timer = nil
+local leftTimer = nil
 local websocket = http.websocket("wss://chat.sc3.io/v2/3101b983-1fb7-4a1f-9ab0-a99412a8c292")
 local hello, ok = websocket.receive()
 
@@ -9,6 +9,7 @@ local hello, ok = websocket.receive()
 --helper functions
 local function writeToFile()
     local ts = fs.open(TS_PATH, "w")
+    table.sort(lastOnID, function (k1, k2) return k1.time < k2.time end)
     for k,v in pairs(lastOnID) do
         ts.write(k.."|"..v.name.."|"..v.ts)
     end
@@ -23,14 +24,22 @@ local function splitString(s, sep)
     return unpack(t)
 end
 
-local function parseDateTime(str)
-    print(str)
-    local Y,M,D = str:match("^(%d-)-?(%d-)-?(%d-)")
-    local h,m,s = str:match("T(%d-):(%d-):(%d-)([-+])")
-    local oh,om =   str:match("([-+])(%d%d):?(%d?%d?)$")
-    print(Y, M, D, h, m, s, oh, om)
-    return os.time({year=Y, month=M, day=D, hour=(h+oh), min=(m+om), sec=s})
+local function parseDateTime(str, EST)
+    local Y,M,D = str:match("^(%d-)[-](%d-)[-](%d-)T")
+    local h,m,s = str:match("T(%d-)[:](%d-)[:](%d-)[-+Z]")
+    Y,M,D = tonumber(Y) or 1, tonumber(M) or 1, tonumber(D) or 1
+    h,m,s = tonumber(h) or 1, tonumber(m) or 0, tonumber(s) or 0
+    if EST then
+        return {year=Y, month=M, day=D, hour=(h-5), min=(m), sec=s}
+    else
+        return {year=Y, month=M, day=D, hour=(h+oh), min=(m+om), sec=s}
+    end
 end
+
+local function formatTime(t)
+    return t.month.."\/"..t.day.."\/"..t.year.." at "..textutils.formatTime(t.hour + (t.min/60) + (t.sec/3600))
+end
+
 
 --load table
 if fs.exists(TS_PATH) then
@@ -53,12 +62,14 @@ parallel.waitForAny(
         while true do
             local packet, ok = websocket.receive()
             packet = textutils.unserializeJSON(packet)
-            if packet.type and packet.type == "event" and packet.event == "leave" then
-                lastOnID[packet.user.uuid] = {["name"] = packet.user.name, ["ts"] = packet.time}
-                if timer then
-                    os.cancelTimer(timer)
+            if packet.type and packet.type == "event" then
+                if packet.event == "leave" then
+                    lastOnID[packet.user.uuid] = {["name"] = packet.user.name, ["ts"] = packet.time}
+                    if leftTimer then
+                        os.cancelTimer(leftTimer)
+                    end
+                    leftTimer = os.startTimer(60)
                 end
-                timer = os.startTimer(60)
             end
         end
     end,
@@ -73,8 +84,8 @@ parallel.waitForAny(
     -- write if queued
     function ()
         while true do
-            os.pullEvent("timer")
-            writeToFile()
+            local e, id = os.pullEvent("timer")
+            if id == leftTimer then writeToFile() end
         end
     end
 )
