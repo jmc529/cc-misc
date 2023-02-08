@@ -12,7 +12,7 @@ local deathTimer = nil
 local function writeToFile()
     local rd = fs.open(RESPECTED_PATH, "w")
     for k,v in pairs(respected) do
-        rd.write(k.."|"..v.username.."|"..v.fReceived)
+        rd.writeLine(k.."|"..v.name.."|"..v.fReceived)
     end
     rd.close()
 end
@@ -25,32 +25,33 @@ local function splitString(s, sep)
     return unpack(t)
 end
 
--- load excluded
-if fs.exists(OPT_OUT_PATH) then
-    local opt = fs.open(OPT_OUT_PATH, "r")
-    while true do
-        local line = opt.readLine()
-        if not line then break end
-        excluded[line] = true
-    end
-    opt.close()
-end
-
---load table
-if fs.exists(TS_PATH) then
-    local last = fs.open(TS_PATH, "r")
-    while true do
-        local line = last.readLine()
-        if not line then
-            break
-        else
-            local id, user, time = splitString(line, "|")
-            lastOnID[id] = {user, time}
+local function loadRespects()
+    -- load excluded
+    if fs.exists(OPT_OUT_PATH) then
+        local opt = fs.open(OPT_OUT_PATH, "r")
+        while true do
+            local line = opt.readLine()
+            if not line then break end
+            excluded[line] = true
         end
+        opt.close()
     end
-    last.close()
-end
 
+    --load table
+    if fs.exists(RESPECTED_PATH) then
+        local resp = fs.open(RESPECTED_PATH, "r")
+        while true do
+            local line = resp.readLine()
+            if not line then
+                break
+            else
+                local id, user, fs = splitString(line, "|")
+                respected[id] = {name=user, fRecieved = fs}
+            end
+        end
+        resp.close()
+    end
+end
 
 parallel.waitForAny(
     function ()
@@ -66,7 +67,7 @@ parallel.waitForAny(
                         if packet.args[1] "opt-out" then
                             local opt = fs.open(OPT_OUT_PATH, "a")
                             excluded[packet.user.uuid] = true
-                            opt.write(packet.user.uuid)
+                            opt.writeLine(packet.user.uuid)
                             opt.close()
                         else
                             chatbox.tell(user, "Press F to pay respects. Opt out with '\\"..RESPECT_BOT.." opt-out'", RESPECT_BOT)
@@ -76,7 +77,7 @@ parallel.waitForAny(
                     if not excluded[packet.user.uuid] and packet.text:lower() == "f" then
                         chatbox.tell(packet.user.name, "You paid your respects to "..lastDead.name, RESPECT_BOT)
                         local currRespect = respected[lastDead.uuid].fReceived or 0
-                        respected[lastDead.uuid] = {["username"] = lastDead.name, ["fReceived"] = currRespect + 1}
+                        respected[lastDead.uuid] = {["name"] = lastDead.name, ["fReceived"] = currRespect + 1}
                         writeToFile()
                     end
                 end

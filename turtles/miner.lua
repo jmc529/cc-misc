@@ -15,7 +15,7 @@ if #args < 3 then
 end
 
 local gpsMode = true
-if gps.locate(5) == nil then 
+if gps.locate(5) == nil then
 	gpsMode = false
 end
 
@@ -45,16 +45,16 @@ local currentFuel = turtle.getFuelLevel()
 
 repeat
 	if mineType == 0 then
-		if currentFuel <= fuelTotal then 
+		if currentFuel <= fuelTotal then
 			print("I need: "..fuelTotal-currentFuel.." to complete this trip.")
 		end
 	elseif mineType == 1 then
 		fuelTotal = math.ceil(fuelTotal/3)
-		if currentFuel <= fuelTotal then 
+		if currentFuel <= fuelTotal then
 			print("I need: "..fuelTotal-currentFuel.." to complete this trip.")
 		end
 	else
-		print("Your third variable must be either 0 for a hole or 1 for an efficent mine.")
+		print("Your third variable must be either 0 for a hole or 1 for an efficient mine.")
 	end
 	if turtle.getFuelLevel() < fuelTotal then
 		print("Give me some fuel and hit enter!")
@@ -97,10 +97,10 @@ local function testSlots(backToMine)
 			end
 		end
 		--returns to location--
-		if backToMine == nil or not backToMine then 
+		if backToMine == nil or not backToMine then
 			bta.goTo(loc)
 		end
-  	end
+	end
 end
 
 local function mineAll()
@@ -136,8 +136,8 @@ local function main()
 	elseif mineType == 1 then
 		--create hole for turtle to use to return to surface--
 		local distance = destinationVector - locationVector
-		local function whichWay() 
-			if distance.y > 0 then 
+		local function whichWay()
+			if distance.y > 0 then
 				return turtle.digUp
 			elseif distance.y < 0 then
 				return turtle.digDown

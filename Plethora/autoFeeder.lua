@@ -9,7 +9,7 @@ local cachedSlot = false
 
 local acceptableFood = {["minecraft:cooked_porkchop"] = true, ["minecraft:cooked_beef"] = true, ["minecraft:cooked_mutton"] = true,
 						["minecraft:honey_bottle"] = true, ["minecraft:cooked_salmon"] = true, ["minecraft:cooked_chicken"] = true,
-						["minecraft:baked_potato"] = true, ["minecraft:bread"] = true, ["minecraft:cooked_cod"] = true, 
+						["minecraft:baked_potato"] = true, ["minecraft:bread"] = true, ["minecraft:cooked_cod"] = true,
 						["minecraft:cooked_rabbit"] = true}
 
 while true do
@@ -18,7 +18,7 @@ while true do
 		local item
 		if cachedSlot then
 			local slotItem = inv.getItemDetail(cachedSlot)
-			if slotItem.name  and inv.consume(cachedSlot) then
+			if slotItem.name and inv.consume(cachedSlot) then
 				item = slotItem
 			else
 				cachedSlot = nil

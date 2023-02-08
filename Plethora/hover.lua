@@ -4,7 +4,7 @@ local modules = peripheral.wrap("back")
 local last = os.clock()
 while true do
 	local success, err = pcall(function()
-		local meta = modules.getMetaByName("informer")
+		local meta = modules.getMetaOwner()
 
 		local pitch = meta.pitch
 		local yaw = meta.yaw

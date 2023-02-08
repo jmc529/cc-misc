@@ -9,9 +9,9 @@ local hello, ok = websocket.receive()
 --helper functions
 local function writeToFile()
     local ts = fs.open(TS_PATH, "w")
-    table.sort(lastOnID, function (k1, k2) return k1.time < k2.time end)
+    table.sort(lastOnID, function (t1, t2) return os.time(parseDateTime(t1.time)) < os.time(parseDateTime(t2.time)) end)
     for k,v in pairs(lastOnID) do
-        ts.write(k.."|"..v.name.."|"..v.ts)
+        ts.writeLine(k.."|"..v.name.."|"..v.ts)
     end
     ts.close()
 end
@@ -36,8 +36,17 @@ local function parseDateTime(str, EST)
     end
 end
 
-local function formatTime(t)
-    return t.month.."\/"..t.day.."\/"..t.year.." at "..textutils.formatTime(t.hour + (t.min/60) + (t.sec/3600))
+local function formatTime(name, t)
+    local time = parseDateTime(t, true)
+    local ts = time.month.."\/"..time.day.."\/"..(tonumber(time.year)%100).."|"..textutils.formatTime(time.hour + (time.min/60) + (time.sec/3600), true)
+    local gap = mWidth - 1 - string.len(name..ts)
+    if gap > 0 then
+        local space = string.rep(" ", gap)
+        return name..space..ts
+    else
+        name:sub(1, name:len() + gap)
+        return name..ts
+    end
 end
 
 
@@ -54,6 +63,7 @@ if fs.exists(TS_PATH) then
         end
     end
     last.close()
+    table.sort(lastOnID, function (t1, t2) return os.time(parseDateTime(t1.time)) < os.time(parseDateTime(t2.time)) end)
 end
 
 parallel.waitForAny(
