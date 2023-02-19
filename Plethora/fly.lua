@@ -26,12 +26,11 @@ parallel.waitForAny(
 				modules.launch(-90, 0, power)
 			elseif key == keys.s then
 				modules.launch(0, 0, power)
-				if not hover then
-					hover = true
+			elseif key == keys.h then
+				hover = not hover
+				if hover then
 					os.queueEvent("hover")
 				end
-			elseif event == "key_up" and key == keys.k then
-				hover = false
 			end
 		end
 	end,
@@ -43,7 +42,7 @@ parallel.waitForAny(
 				local diff = now - last
 				last = now
 				local selectedSlot = meta.heldItemSlot
-				power = selectedSlot * diff;
+				local power = selectedSlot * diff;
 
 				local mY = meta.motionY
 				mY = (mY - 0.138) / 0.8
