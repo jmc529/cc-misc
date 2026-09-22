@@ -67,6 +67,18 @@ global multishell: multishelllib
 -- Only present on command computers.
 global commands: commandslib
 
+-- Type-only namespaces. These have no runtime value: they are exposed as
+-- global types so source files can refer to `peripherals.Inventory`,
+-- `plethora.NeuralInterface` or `ccos` in casts without a `require` that
+-- would survive into the generated Lua and fail in-game.
+local ccoslib = require("types.ccos")
+local peripheralslib = require("types.peripherals")
+local plethoralib = require("types.plethora")
+
+global type ccos = ccoslib
+global type peripherals = peripheralslib
+global type plethora = plethoralib
+
 -- Globals defined by the BIOS.
 local type CompleteFn = function(string): {string}
 
