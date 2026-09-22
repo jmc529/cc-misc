@@ -17,15 +17,20 @@ local disklib = require("types.disk")
 local fslib = require("types.fs")
 local gpslib = require("types.gps")
 local helplib = require("types.help")
+local httplib = require("types.http")
 local keyslib = require("types.keys")
+local multishelllib = require("types.multishell")
 local paintutilslib = require("types.paintutils")
 local parallellib = require("types.parallel")
 local peripherallib = require("types.peripheral")
+local pocketlib = require("types.pocket")
 local rednetlib = require("types.rednet")
 local redstonelib = require("types.redstone")
 local settingslib = require("types.settings")
+local shelllib = require("types.shell")
 local termlib = require("types.term")
 local textutilslib = require("types.textutils")
+local turtlelib = require("types.turtle")
 local vectorlib = require("types.vector")
 local windowlib = require("types.window")
 
@@ -35,6 +40,7 @@ global disk: disklib
 global fs: fslib
 global gps: gpslib
 global help: helplib
+global http: httplib
 global keys: keyslib
 global paintutils: paintutilslib
 global parallel: parallellib
@@ -43,10 +49,20 @@ global rednet: rednetlib
 global redstone: redstonelib
 global rs: redstonelib
 global settings: settingslib
+global shell: shelllib
 global term: termlib
 global textutils: textutilslib
 global vector: vectorlib
 global window: windowlib
+
+-- Only present on turtles.
+global turtle: turtlelib
+
+-- Only present on pocket computers.
+global pocket: pocketlib
+
+-- Only present on advanced computers, under the advanced shell.
+global multishell: multishelllib
 
 -- Only present on command computers.
 global commands: commandslib
