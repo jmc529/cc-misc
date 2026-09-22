@@ -1,5 +1,8 @@
 TL_SOURCES := $(shell find src -name '*.tl')
-LUA_OUTPUT := $(patsubst src/%.tl,build/%.lua,$(TL_SOURCES))
+# Not converted yet; copied into build/ as-is so build/ is the whole deployable
+# tree rather than half of it.
+LUA_SOURCES := $(shell find src -name '*.lua')
+LUA_COPIES := $(patsubst src/%.lua,build/%.lua,$(LUA_SOURCES))
 
 .PHONY: all check build lint fix clean
 
@@ -7,15 +10,14 @@ all: check build lint
 
 # Type-check without emitting anything.
 check:
-	tl check $(TL_SOURCES)
+	cyan check $(TL_SOURCES)
 
-build: $(LUA_OUTPUT)
+build: $(LUA_COPIES)
+	cyan build
 
-# `tl gen` writes next to the current directory rather than honouring
-# tlconfig's build_dir, so each file is emitted explicitly.
-build/%.lua: src/%.tl
+build/%.lua: src/%.lua
 	@mkdir -p $(dir $@)
-	tl gen -o $@ $<
+	cp $< $@
 
 lint:
 	illuaminate lint src
