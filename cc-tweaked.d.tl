@@ -78,10 +78,12 @@ global chatbox: chatboxlib
 local ccoslib = require("types.ccos")
 local peripheralslib = require("types.peripherals")
 local plethoralib = require("types.plethora")
+local sc3lib = require("types.sc3")
 
 global type ccos = ccoslib
 global type peripherals = peripheralslib
 global type plethora = plethoralib
+global type sc3 = sc3lib
 
 -- Globals defined by the BIOS.
 local type CompleteFn = function(string): {string}
