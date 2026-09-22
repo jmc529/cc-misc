@@ -12,11 +12,16 @@
 
 local colorslib = require("types.colors")
 local colourslib = require("types.colours")
+local commandslib = require("types.commands")
+local disklib = require("types.disk")
 local fslib = require("types.fs")
+local gpslib = require("types.gps")
 local helplib = require("types.help")
 local keyslib = require("types.keys")
 local paintutilslib = require("types.paintutils")
 local parallellib = require("types.parallel")
+local peripherallib = require("types.peripheral")
+local rednetlib = require("types.rednet")
 local redstonelib = require("types.redstone")
 local settingslib = require("types.settings")
 local termlib = require("types.term")
@@ -26,11 +31,15 @@ local windowlib = require("types.window")
 
 global colors: colorslib
 global colours: colourslib
+global disk: disklib
 global fs: fslib
+global gps: gpslib
 global help: helplib
 global keys: keyslib
 global paintutils: paintutilslib
 global parallel: parallellib
+global peripheral: peripherallib
+global rednet: rednetlib
 global redstone: redstonelib
 global rs: redstonelib
 global settings: settingslib
@@ -38,6 +47,9 @@ global term: termlib
 global textutils: textutilslib
 global vector: vectorlib
 global window: windowlib
+
+-- Only present on command computers.
+global commands: commandslib
 
 -- Globals defined by the BIOS.
 local type CompleteFn = function(string): {string}
