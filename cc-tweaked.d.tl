@@ -7,9 +7,10 @@
 --
 -- Note: `os`, `io`, `string`, `table` and `math` are already declared by Teal's
 -- standard library and cannot be redeclared here. CC's additions to `os`
--- (`os.pullEvent`, `os.epoch`, ...) are therefore not visible to the type
--- checker.
+-- (`os.pullEvent`, `os.epoch`, ...) live in `types/ccos.d.tl` instead, and a
+-- file that needs them starts with `local os = _G.os as ccos`.
 
+local chatboxlib = require("types.chatbox")
 local colorslib = require("types.colors")
 local colourslib = require("types.colours")
 local commandslib = require("types.commands")
@@ -66,6 +67,9 @@ global multishell: multishelllib
 
 -- Only present on command computers.
 global commands: commandslib
+
+-- Only present next to a licensed SwitchCraft chatbox.
+global chatbox: chatboxlib
 
 -- Type-only namespaces. These have no runtime value: they are exposed as
 -- global types so source files can refer to `peripherals.Inventory`,
