@@ -6,10 +6,10 @@ Pastebin: MdD051uF
         boxTo(destinationVector[, fn]) moves to every location between two coordinates
         goTo(vector[, fn]) moves the turtle to a specific vector
         calibrate() works out where the turtle is and which way it faces
+        refuel() checks inventory for fuel
     Packages:
         move.
             move(direction[, fn][, count]) multiple times, forward-back-up-down
-            refuel() checks inventory for fuel
             xMovement(distance[, fn]) moves the turtle along the x-axis
             yMovement(distance[, fn]) moves the turtle along the y-axis
             zMovement(distance[, fn]) moves the turtle along the z-axis
@@ -33,6 +33,28 @@ This API should be used with lua's require method
 local state = require("modules.state")
 local turn = require("modules.turn")
 local move = require("modules.move")
+
+-- Burns whatever fuel is in the inventory, up to the turtle's fuel limit.
+local function refuel(): boolean, integer
+   local level = turtle.getFuelLevel()
+   if level is string then
+      -- "unlimited" on a fuel-less server; nothing to do.
+      return true, math.huge as integer
+   end
+
+   local limit = turtle.getFuelLimit() as integer
+   for slot = 1, 16 do
+      turtle.select(slot)
+      if turtle.refuel(0) then
+         while (turtle.getFuelLevel() as integer) < limit and turtle.getItemCount(slot) > 0 do
+            turtle.refuel(1)
+         end
+         return true, turtle.getFuelLevel() as integer
+      end
+   end
+
+   return false, level
+end
 
 -- Returns the turtle's position as a vector, from gps where available and from
 -- dead reckoning otherwise.
@@ -106,7 +128,7 @@ return {
    getPosition = getPosition,
    goTo = goTo,
    boxTo = boxTo,
-   refuel = move.refuel,
+   refuel = refuel,
    move = move,
    turn = turn,
 }

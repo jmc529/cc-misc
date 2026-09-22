@@ -8,7 +8,6 @@ local type Step = function(): boolean, string
 local record move
    -- Callable as `move.move(direction, fn, count)`.
    move: function(direction: string | integer, fn?: function(), count?: integer): boolean, integer
-   refuel: function(): boolean, integer
    xMovement: function(distance: number, fn?: function()): boolean, integer
    yMovement: function(distance: number, fn?: function()): boolean, integer
    zMovement: function(distance: number, fn?: function()): boolean, integer
@@ -49,28 +48,6 @@ function move.move(direction: string | integer, fn?: function(), count?: integer
       if fn ~= nil then fn() end
    end
    return true, 0
-end
-
--- Burns whatever fuel is in the inventory, up to the turtle's fuel limit.
-function move.refuel(): boolean, integer
-   local level = turtle.getFuelLevel()
-   if level is string then
-      -- "unlimited" on a fuel-less server; nothing to do.
-      return true, math.huge as integer
-   end
-
-   local limit = turtle.getFuelLimit() as integer
-   for slot = 1, 16 do
-      turtle.select(slot)
-      if turtle.refuel(0) then
-         while (turtle.getFuelLevel() as integer) < limit and turtle.getItemCount(slot) > 0 do
-            turtle.refuel(1)
-         end
-         return true, turtle.getFuelLevel() as integer
-      end
-   end
-
-   return false, level
 end
 
 local function axisMovement(axis: string, distance: number, fn?: function(), before?: function()): boolean, integer
